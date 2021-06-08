@@ -115,13 +115,8 @@ namespace EternalModManager
         /// <param name="modsFolder">mods folder name</param>
         public void FillModsListBox()
         {
-            // Prompt to create the folder if it doesn't exist
-            if (!Utils.CheckModsDirectory("Mods"))
-            {
-                return;
-            }
-
-            if (!Utils.CheckModsDirectory("DisabledMods"))
+            // Prompt to create the folders if they don't exist
+            if (!Utils.CheckModsDirectory("Mods") || !Utils.CheckModsDirectory("DisabledMods"))
             {
                 return;
             }
@@ -155,13 +150,8 @@ namespace EternalModManager
         /// <param name="e">event args</param>
         private void ModListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Prompt to create the folder if it doesn't exist
-            if (!Utils.CheckModsDirectory("Mods"))
-            {
-                return;
-            }
-
-            if (!Utils.CheckModsDirectory("DisabledMods"))
+            // Prompt to create the folders if they don't exist
+            if (!Utils.CheckModsDirectory("Mods") || !Utils.CheckModsDirectory("DisabledMods"))
             {
                 return;
             }
@@ -189,6 +179,13 @@ namespace EternalModManager
             // Prompt to create the folder if it doesn't exist
             if (!Utils.CheckModsDirectory("Mods"))
             {
+                return;
+            }
+
+            // If we can't find EternalModInjector.bat, warn the user
+            if (!File.Exists(Path.Combine(App.GameFolder, "EternalModInjector.bat")))
+            {
+                MessageBox.Show("Can't find EternalModInjector.bat\nMake sure that the modding tools are installed.", "Missing tools", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -296,12 +293,8 @@ namespace EternalModManager
         /// <param name="e">event args</param>
         private void ModCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            if (!Utils.CheckModsDirectory("Mods"))
-            {
-                return;
-            }
-
-            if (!Utils.CheckModsDirectory("DisabledMods"))
+            // Prompt to create the folders if they don't exist
+            if (!Utils.CheckModsDirectory("Mods") || !Utils.CheckModsDirectory("DisabledMods"))
             {
                 return;
             }
@@ -404,12 +397,8 @@ namespace EternalModManager
         /// <param name="e">event args</param>
         private void ModListBox_Drop(object sender, DragEventArgs e)
         {
-            if (!Utils.CheckModsDirectory("Mods"))
-            {
-                return;
-            }
-
-            if (!Utils.CheckModsDirectory("DisabledMods"))
+            // Prompt to create the folders if they don't exist
+            if (!Utils.CheckModsDirectory("Mods") || !Utils.CheckModsDirectory("DisabledMods"))
             {
                 return;
             }
@@ -452,12 +441,8 @@ namespace EternalModManager
         /// <param name="e">event args</param>
         private void InstallModButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!Utils.CheckModsDirectory("Mods"))
-            {
-                return;
-            }
-
-            if (!Utils.CheckModsDirectory("DisabledMods"))
+            // Prompt to create the folders if they don't exist
+            if (!Utils.CheckModsDirectory("Mods") || !Utils.CheckModsDirectory("DisabledMods"))
             {
                 return;
             }
@@ -508,12 +493,8 @@ namespace EternalModManager
         /// <param name="e">event args</param>
         private void DeleteSelectedButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!Utils.CheckModsDirectory("Mods"))
-            {
-                return;
-            }
-
-            if (!Utils.CheckModsDirectory("DisabledMods"))
+            // Prompt to create the folders if they don't exist
+            if (!Utils.CheckModsDirectory("Mods") || !Utils.CheckModsDirectory("DisabledMods"))
             {
                 return;
             }
@@ -609,12 +590,8 @@ namespace EternalModManager
         /// <param name="e">event args</param>
         private void EnableDisableSelectedButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!Utils.CheckModsDirectory("Mods"))
-            {
-                return;
-            }
-
-            if (!Utils.CheckModsDirectory("DisabledMods"))
+            // Prompt to create the folders if they don't exist
+            if (!Utils.CheckModsDirectory("Mods") || !Utils.CheckModsDirectory("DisabledMods"))
             {
                 return;
             }
@@ -665,12 +642,8 @@ namespace EternalModManager
         /// <param name="e"></param>
         private void EnableDisableAllCheckbox_Checked(object sender, RoutedEventArgs e)
         {
-            if (!Utils.CheckModsDirectory("Mods"))
-            {
-                return;
-            }
-
-            if (!Utils.CheckModsDirectory("DisabledMods"))
+            // Prompt to create the folders if they don't exist
+            if (!Utils.CheckModsDirectory("Mods") || !Utils.CheckModsDirectory("DisabledMods"))
             {
                 return;
             }
@@ -708,11 +681,12 @@ namespace EternalModManager
         private void ModListBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             // Only handle the space key, ignore if key modifiers are being applied
-            if (e.Key != Key.Space || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            if ((e.Key != Key.Space && e.Key != Key.Delete) || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
                 return;
             }
 
+            // Prompt to create the folders if they don't exist
             if (!Utils.CheckModsDirectory("Mods") || !Utils.CheckModsDirectory("DisabledMods"))
             {
                 return;
@@ -750,14 +724,65 @@ namespace EternalModManager
                         continue;
                     }
 
-                    try
+                    if (e.Key == Key.Space)
                     {
-                        File.Move(filePath, Path.Combine(App.GameFolder, destDir, (selectedMod as Mod).FileName));
+                        try
+                        {
+                            File.Move(filePath, Path.Combine(App.GameFolder, destDir, (selectedMod as Mod).FileName));
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("Error while moving mod file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            continue;
+                        }
                     }
-                    catch (Exception)
+                    else if (e.Key == Key.Delete)
                     {
-                        MessageBox.Show("Error while moving mod file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        continue;
+                        // Warn the user first
+                        if (ModListBox.SelectedItems.Count == 1)
+                        {
+                            if (MessageBox.Show($"Are you sure you want to delete the selected mod?\n\n{(ModListBox.SelectedItem as Mod).FileName}", "Delete mods", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
+                            {
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            if (MessageBox.Show($"Are you sure you want to delete the selected mods?", "Delete mods", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
+                            {
+                                return;
+                            }
+                        }
+
+                        // Build the mods to delete list and then delete them
+                        List<string> modsToDelete = new List<string>();
+
+                        foreach (var item in ModListBox.SelectedItems)
+                        {
+                            var mod = (item as Mod);
+                            var path = Path.Combine(App.GameFolder, mod.IsEnabled ? "Mods" : "DisabledMods", mod.FileName);
+
+                            if (!File.Exists(path))
+                            {
+                                MessageBox.Show($"{mod.FileName} doesn't exist.", "Delete mods", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;
+                            }
+
+                            modsToDelete.Add(path);
+                        }
+
+                        foreach (var modPath in modsToDelete)
+                        {
+                            try
+                            {
+                                File.Delete(modPath);
+                            }
+                            catch (Exception)
+                            {
+                                MessageBox.Show("Error while deleting mod file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                continue;
+                            }
+                        }
                     }
                 }
             }
