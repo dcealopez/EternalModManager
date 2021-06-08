@@ -705,7 +705,7 @@ namespace EternalModManager
         /// </summary>
         /// <param name="sender">sender</param>
         /// <param name="e">event args</param>
-        private void ModListBox_PreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        private void ModListBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             // Only handle the space key, ignore if key modifiers are being applied
             if (e.Key != Key.Space || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
@@ -722,6 +722,8 @@ namespace EternalModManager
             {
                 return;
             }
+
+            e.Handled = true;
 
             // Determine the source and destination directories and enable / disable the mods
             string sourceDir = "Mods";

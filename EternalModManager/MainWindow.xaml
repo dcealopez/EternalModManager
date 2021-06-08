@@ -21,7 +21,7 @@
                     <Label>Mod list (drag and drop .zip files to install mods)</Label>
                     <CheckBox Margin="0" VerticalAlignment="Center" HorizontalAlignment="Right" Name="EnableDisableAllCheckbox" Checked="EnableDisableAllCheckbox_Checked" Unchecked="EnableDisableAllCheckbox_Checked">Enable/Disable All</CheckBox>
                 </DockPanel>
-                <ListBox SelectionMode="Extended" Height="275" Name="ModListBox" SelectionChanged="ModListBox_SelectionChanged" AllowDrop="True" DragDrop.DragEnter="ModListBox_DragEnter" DragDrop.Drop="ModListBox_Drop" PreviewKeyUp="ModListBox_PreviewKeyUp">
+                <ListBox SelectionMode="Extended" Height="275" Name="ModListBox" SelectionChanged="ModListBox_SelectionChanged" AllowDrop="True" DragDrop.DragEnter="ModListBox_DragEnter" DragDrop.Drop="ModListBox_Drop" PreviewKeyDown="ModListBox_PreviewKeyDown">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Name="ListBoxItemStackPanel">

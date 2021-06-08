@@ -12,7 +12,7 @@ namespace EternalModManager
         /// <summary>
         /// Expected game folder (working directory)
         /// </summary>
-        public static string GameFolder = ".";
+        public static string GameFolder = "D:\\Juegos\\DOOMEternal";
 
         /// <summary>
         /// Determines if the program is restoring the backups or not
