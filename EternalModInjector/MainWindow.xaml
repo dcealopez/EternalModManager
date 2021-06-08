@@ -1,0 +1,95 @@
+﻿<Window x:Class="EternalModManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:eternalmodmanager="clr-namespace:EternalModManager"
+        mc:Ignorable="d"
+        Title="EternalModManager v1.0 by proteh" Height="695" Width="610" ResizeMode="CanMinimize" Icon="Resources\EternalModManager.ico" WindowStartupLocation="CenterScreen">
+    <Grid Name="MainGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="2" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="20 0" VerticalAlignment="Top">
+            <StackPanel>
+                <DockPanel>
+                    <Label>Mod list (drag and drop .zip files to install mods)</Label>
+                    <CheckBox Margin="0" VerticalAlignment="Center" HorizontalAlignment="Right" Name="EnableDisableAllCheckbox" Checked="EnableDisableAllCheckbox_Checked" Unchecked="EnableDisableAllCheckbox_Checked">Enable/Disable All</CheckBox>
+                </DockPanel>
+                <ListBox SelectionMode="Extended" Height="275" Name="ModListBox" SelectionChanged="ModListBox_SelectionChanged" AllowDrop="True" DragDrop.DragEnter="ModListBox_DragEnter" DragDrop.Drop="ModListBox_Drop" PreviewKeyUp="ModListBox_PreviewKeyUp">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Name="ListBoxItemStackPanel">
+                                <CheckBox IsChecked="{Binding IsEnabled}" Checked="ModCheckBox_Checked"  Unchecked="ModCheckBox_Checked" />
+                                <Label Padding="5 0 0 0" Content="{Binding FileName}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ContextMenu>
+                        <ContextMenu HorizontalAlignment="Right" HorizontalOffset="225" Opened="ContextMenu_Opened">
+                            <MenuItem Header="Install mods from .zip files" Name="InstallModButton" Click="InstallModButton_Click"/>
+                            <Separator />
+                            <MenuItem Header="Enable selected" Name="EnableDisableSelectedButton" Click="EnableDisableSelectedButton_Click"/>
+                            <MenuItem Header="Delete selected" Name="DeleteSelectedButton" Click="DeleteSelectedButton_Click"/>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
+            </StackPanel>
+        </Grid>
+        <StackPanel Grid.Row="1" Margin="10 5 0 15">
+            <Label>
+                <Bold>Selected mod information:</Bold>
+            </Label>
+            <Label Padding="5 2">Name:</Label>
+            <Label Padding="15 2">
+                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="15" FontStyle="Italic" Name="ModNameTextBlock">
+                    -
+                </TextBlock>
+            </Label>
+            <Label Padding="5 2">Description:</Label>
+            <Label Padding="15 2">
+                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="64" FontStyle="Italic" Name="ModDescriptionTextBlock">
+                    -
+                </TextBlock>
+            </Label>
+            <Label Padding="5 2">Version:</Label>
+            <Label Padding="15 2">
+                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="15" FontStyle="Italic" Name="ModVersionTextBlock">
+                    -
+                </TextBlock>
+            </Label>
+            <Label Padding="5 2">Min. required mod loader version:</Label>
+            <Label Padding="15 2">
+                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="15" FontStyle="Italic" Name="ModLoaderVersionTextBlock">
+                    -
+                </TextBlock>
+            </Label>
+            <Label Padding="5 2">Load priority:</Label>
+            <Label Padding="15 2">
+                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="15" FontStyle="Italic" Name="ModLoadPriorityTextBlock">
+                    -
+                </TextBlock>
+            </Label>
+        </StackPanel>
+        <GridSplitter Grid.Column="1" Grid.Row="2" Height="2" HorizontalAlignment="Stretch" IsEnabled="False"/>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Margin="20 15 25 20" Height="30" Name="InjectAndPlayButton" Click="InjectAndPlayButton_Click">
+                <Bold>
+                    <Label>_Run mod injector</Label>
+                </Bold>
+            </Button>
+            <Button Grid.Column="1" Margin="20 15 25 20" Height="30" Name="AdvancedOptionsButton" Click="AdvancedOptionsButton_Click">
+                <Label>_Advanced options...</Label>
+            </Button>
+        </Grid>
+    </Grid>
+</Window>

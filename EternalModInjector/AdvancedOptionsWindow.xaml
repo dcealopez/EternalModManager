@@ -1,0 +1,16 @@
+﻿<Window x:Class="EternalModManager.AdvancedOptionsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EternalModManager"
+        mc:Ignorable="d"
+        Title="Advanced options" Height="260" Width="300" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True">
+    <StackPanel Name="MainStackPanel">
+        <Button Margin="20 15 25 5" Height="30" Name="OpenEnabledModsButton" Click="OpenEnabledModsButton_Click">Open enabled mods folder</Button>
+        <Button Margin="20 5 25 5" Height="30" Name="OpenDisabledModsButton" Click="OpenDisabledModsButton_Click">Open disabled mods folder</Button>
+        <Button Margin="20 5 25 5" Height="30" Name="OpenGameFolderButton" Click="OpenGameFolderButton_Click">Open game folder</Button>
+        <Button Margin="20 5 25 5" Height="30" Name="RestoreBackupsButton" Click="RestoreBackupsButton_Click">Restore backups</Button>
+        <Button Margin="20 5 25 5" Height="30" Name="ResetBackupsButton" Click="ResetBackupsButton_Click">Reset backups</Button>
+    </StackPanel>
+</Window>
