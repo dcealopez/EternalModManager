@@ -86,7 +86,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Mod.cs" />
-    <Compile Include="SelectableItem.cs" />
     <Compile Include="Utils.cs" />
     <Page Include="AdvancedOptionsWindow.xaml">
       <SubType>Designer</SubType>
