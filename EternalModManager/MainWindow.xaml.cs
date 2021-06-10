@@ -212,6 +212,7 @@ namespace EternalModManager
         private void HideModInformation()
         {
             ModNameTextBlock.Text = "-";
+            ModAuthorsTextBlock.Text = "-";
             ModDescriptionTextBlock.Text = "-";
             ModVersionTextBlock.Text = "-";
             ModLoaderVersionTextBlock.Text = "-";
@@ -240,6 +241,7 @@ namespace EternalModManager
                         Dispatcher.Invoke(() =>
                         {
                             ModNameTextBlock.Text = Path.GetFileName(modFilePath);
+                            ModAuthorsTextBlock.Text = "Unknown.";
                             ModDescriptionTextBlock.Text = "Not specified.";
                             ModVersionTextBlock.Text = "Not specified.";
                             ModLoaderVersionTextBlock.Text = "Unknown.";
@@ -275,6 +277,7 @@ namespace EternalModManager
                             Dispatcher.Invoke(() =>
                             {
                                 ModNameTextBlock.Text = modInfo == null || modInfo.Name == null ? Path.GetFileName(modFilePath) : modInfo.Name;
+                                ModAuthorsTextBlock.Text = modInfo == null || modInfo.Author == null ? "Unknown." : modInfo.Author;
                                 ModDescriptionTextBlock.Text = modInfo == null || modInfo.Description == null ? "Not specified." : modInfo.Description;
                                 ModVersionTextBlock.Text = modInfo == null || modInfo.Version == null ? "Not specified." : modInfo.Version;
                                 ModLoaderVersionTextBlock.Text = modInfo == null || modInfo.RequiredVersion == 0 ? "Unknown." : modInfo.RequiredVersion.ToString();

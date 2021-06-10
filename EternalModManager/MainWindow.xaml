@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:eternalmodmanager="clr-namespace:EternalModManager"
         mc:Ignorable="d"
-        Title="EternalModManager v1.0 by proteh" Height="695" Width="610" ResizeMode="CanMinimize" Icon="Resources\EternalModManager.ico" WindowStartupLocation="CenterScreen">
+        Title="EternalModManager v1.1 by proteh" Height="766" Width="610" ResizeMode="CanMinimize" Icon="Resources\EternalModManager.ico" WindowStartupLocation="CenterScreen">
     <Grid Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -19,7 +19,7 @@
             <StackPanel>
                 <DockPanel>
                     <Label>Mod list (drag and drop .zip files to install mods)</Label>
-                    <CheckBox Margin="0" VerticalAlignment="Center" HorizontalAlignment="Right" Name="EnableDisableAllCheckbox" Checked="EnableDisableAllCheckbox_Checked" Unchecked="EnableDisableAllCheckbox_Checked">Enable/Disable All</CheckBox>
+                    <CheckBox Margin="0 0 5 0" VerticalAlignment="Center" HorizontalAlignment="Right" Name="EnableDisableAllCheckbox" Checked="EnableDisableAllCheckbox_Checked" Unchecked="EnableDisableAllCheckbox_Checked">Enable/Disable All</CheckBox>
                 </DockPanel>
                 <ListBox SelectionMode="Extended" Height="275" Name="ModListBox" SelectionChanged="ModListBox_SelectionChanged" AllowDrop="True" DragDrop.DragEnter="ModListBox_DragEnter" DragDrop.Drop="ModListBox_Drop" PreviewKeyDown="ModListBox_PreviewKeyDown">
                     <ListBox.ItemTemplate>
@@ -41,37 +41,43 @@
                 </ListBox>
             </StackPanel>
         </Grid>
-        <StackPanel Grid.Row="1" Margin="10 5 0 15">
-            <Label>
+        <StackPanel Grid.Row="1" Margin="20 5 5 15">
+            <Label Margin="-5 0 0 0">
                 <Bold>Selected mod information:</Bold>
             </Label>
             <Label Padding="5 2">Name:</Label>
             <Label Padding="15 2">
-                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="15" FontStyle="Italic" Name="ModNameTextBlock">
+                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="20" FontStyle="Italic" Name="ModNameTextBlock">
+                    -
+                </TextBlock>
+            </Label>
+            <Label Padding="5 2">Author(s):</Label>
+            <Label Padding="15 2">
+                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="20" FontStyle="Italic" Name="ModAuthorsTextBlock">
                     -
                 </TextBlock>
             </Label>
             <Label Padding="5 2">Description:</Label>
             <Label Padding="15 2">
-                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="64" FontStyle="Italic" Name="ModDescriptionTextBlock">
+                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="70" FontStyle="Italic" Name="ModDescriptionTextBlock">
                     -
                 </TextBlock>
             </Label>
             <Label Padding="5 2">Version:</Label>
             <Label Padding="15 2">
-                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="15" FontStyle="Italic" Name="ModVersionTextBlock">
+                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="20" FontStyle="Italic" Name="ModVersionTextBlock">
                     -
                 </TextBlock>
             </Label>
             <Label Padding="5 2">Min. required mod loader version:</Label>
             <Label Padding="15 2">
-                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="15" FontStyle="Italic" Name="ModLoaderVersionTextBlock">
+                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="20" FontStyle="Italic" Name="ModLoaderVersionTextBlock">
                     -
                 </TextBlock>
             </Label>
             <Label Padding="5 2">Load priority:</Label>
             <Label Padding="15 2">
-                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="15" FontStyle="Italic" Name="ModLoadPriorityTextBlock">
+                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Height="20" FontStyle="Italic" Name="ModLoadPriorityTextBlock">
                     -
                 </TextBlock>
             </Label>

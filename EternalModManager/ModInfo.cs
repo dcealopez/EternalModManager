@@ -11,6 +11,11 @@
         public string Name;
 
         /// <summary>
+        /// Mod author
+        /// </summary>
+        public string Author;
+
+        /// <summary>
         /// Mod description
         /// </summary>
         public string Description;
