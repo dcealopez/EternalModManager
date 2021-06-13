@@ -5,12 +5,53 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EternalModManager"
         mc:Ignorable="d"
-        Title="Advanced options" Height="260" Width="300" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True">
-    <StackPanel Name="MainStackPanel">
-        <Button Margin="20 15 25 5" Height="30" Name="OpenEnabledModsButton" Click="OpenEnabledModsButton_Click">Open enabled mods folder</Button>
-        <Button Margin="20 5 25 5" Height="30" Name="OpenDisabledModsButton" Click="OpenDisabledModsButton_Click">Open disabled mods folder</Button>
-        <Button Margin="20 5 25 5" Height="30" Name="OpenGameFolderButton" Click="OpenGameFolderButton_Click">Open game folder</Button>
-        <Button Margin="20 5 25 5" Height="30" Name="RestoreBackupsButton" Click="RestoreBackupsButton_Click">Restore backups</Button>
-        <Button Margin="20 5 25 5" Height="30" Name="ResetBackupsButton" Click="ResetBackupsButton_Click">Reset backups</Button>
-    </StackPanel>
+        Title="Advanced options" Height="305" Width="600" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True">
+    <Grid Name="MainGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="2" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0">
+            <Button Margin="20 15 15 5" Height="30" Name="OpenEnabledModsButton" Click="OpenEnabledModsButton_Click">
+                <Label>Open _enabled mods folder</Label>
+            </Button>
+            <Button Margin="20 5 15 5" Height="30" Name="OpenDisabledModsButton" Click="OpenDisabledModsButton_Click">
+                <Label>Open _disabled mods folder</Label>
+            </Button>
+            <Button Margin="20 5 15 5" Height="30" Name="OpenGameFolderButton" Click="OpenGameFolderButton_Click">
+                <Label>Open _game folder</Label>
+            </Button>
+            <Button Margin="20 5 15 5" Height="30" Name="RestoreBackupsButton" Click="RestoreBackupsButton_Click">
+                <Label>Restore _backups</Label>
+            </Button>
+            <Button Margin="20 5 15 5" Height="30" Name="ResetBackupsButton" Click="ResetBackupsButton_Click">
+                <Label>_Reset backups</Label>
+            </Button>
+            <Button Margin="20 5 15 5" Height="30" Name="CopyTemplateButton" Click="CopyTemplateButton_Click">
+                <Label>_Copy EternalMod.json template</Label>
+            </Button>
+        </StackPanel>
+        <GridSplitter Grid.Column="1" Width="2" Margin="0 15 0 20" HorizontalAlignment="Stretch" IsEnabled="False"/>
+        <Grid Margin="15 0 0 0" Grid.Column="2" Name="InjectorSettingsGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Column="1" Margin="0 15">
+                <Label Padding="0" Margin="0 0 0 10">
+                    <Bold>Mod Injector settings:</Bold>
+                </Label>
+                <CheckBox IsChecked="{Binding ModInjectorSettings.AutomaticGameLaunch}" Name="AutoLaunchGameCheckBox">Automatically launch the game after injecting mods</CheckBox>
+                <CheckBox Margin="0 5 0 0" IsChecked="{Binding ModInjectorSettings.ResetBackups}" Name="ResetBackupsCheckBox" ToolTip="Resets the backed up game files before injecting mods. Enable only after verifying your game files." ToolTipService.HorizontalOffset="400">Reset backups before injecting mods</CheckBox>
+                <CheckBox Margin="0 5 0 0" IsChecked="{Binding ModInjectorSettings.SlowMode}" Name="SlowModeCheckBox" ToolTip="The slow mod loading mode produces slightly lighter files and uses less disk. If unsure, leave this unchecked." ToolTipService.HorizontalOffset="400">Enable slow mod loading mode for the mod loader</CheckBox>
+                <CheckBox Margin="0 5 0 0" IsChecked="{Binding ModInjectorSettings.Verbose}" Name="VerboseCheckBox" ToolTip="Useful for debugging mods. Prints more detailed information while loading mod files." ToolTipService.HorizontalOffset="300">Enable verbose logging for the mod loader</CheckBox>
+                <Label Padding="0" Margin="0 10 0 0" ToolTip="Advanced users may choose to enter modifications to their launch options." ToolTipService.HorizontalOffset="300">Game launch parameters:</Label>
+                <TextBox Margin="0 5 20 0" Padding="2" Text="{Binding ModInjectorSettings.GameParameters, UpdateSourceTrigger=PropertyChanged}" Name="GameParametersTextBox" ToolTip="Advanced users may choose to enter modifications to their launch options." ToolTipService.HorizontalOffset="300"></TextBox>
+            </StackPanel>
+            <Button Margin="0 0 20 21" DockPanel.Dock="Bottom" Grid.Row="1" IsEnabled="False" Name="SaveInjectorSettingsButton" Click="SaveInjectorSettingsButton_Click">
+                <Label>_Save mod injector settings</Label>
+            </Button>
+        </Grid>
+    </Grid>
 </Window>

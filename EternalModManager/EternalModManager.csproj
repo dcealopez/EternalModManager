@@ -86,6 +86,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Mod.cs" />
+    <Compile Include="ModInjectorSettings.cs" />
     <Compile Include="Utils.cs" />
     <Page Include="AdvancedOptionsWindow.xaml">
       <SubType>Designer</SubType>

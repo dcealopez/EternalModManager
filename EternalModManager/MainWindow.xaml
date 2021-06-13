@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:eternalmodmanager="clr-namespace:EternalModManager"
         mc:Ignorable="d"
-        Title="EternalModManager v1.1 by proteh" Height="766" Width="610" ResizeMode="CanMinimize" Icon="Resources\EternalModManager.ico" WindowStartupLocation="CenterScreen">
+        Title="EternalModManager v1.2 by proteh" Height="766" Width="610" ResizeMode="CanMinimize" Icon="Resources\EternalModManager.ico" WindowStartupLocation="CenterScreen">
     <Grid Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -26,7 +26,9 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Name="ListBoxItemStackPanel">
                                 <CheckBox IsChecked="{Binding IsEnabled}" Checked="ModCheckBox_Checked"  Unchecked="ModCheckBox_Checked" />
-                                <Label Padding="5 0 0 0" Content="{Binding FileName}" />
+                                <Label Padding="5 0 0 0">
+                                    <TextBlock Text="{Binding FileName}" />
+                                </Label>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

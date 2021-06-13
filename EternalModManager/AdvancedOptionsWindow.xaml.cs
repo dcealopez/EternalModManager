@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EternalModManager.Properties;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -13,14 +14,117 @@ namespace EternalModManager
     public partial class AdvancedOptionsWindow : Window
     {
         /// <summary>
+        /// Mod injector settings
+        /// </summary>
+        public ModInjectorSettings ModInjectorSettings { get; set; }
+
+        /// <summary>
+        /// Original mod injector settings object, to track setting changes
+        /// </summary>
+        private ModInjectorSettings OriginalModInjectorSettings;
+
+        /// <summary>
         /// Advanced Options Window constructor
         /// </summary>
         public AdvancedOptionsWindow()
         {
             InitializeComponent();
 
+            // Set the data context for the injector settings controls to this window
+            // so that they can be bound to the injector settings object properties
+            AutoLaunchGameCheckBox.DataContext = this;
+            ResetBackupsCheckBox.DataContext = this;
+            SlowModeCheckBox.DataContext = this;
+            VerboseCheckBox.DataContext = this;
+            GameParametersTextBox.DataContext = this;
+
+            // Load the current mod injector settings file
+            LoadModInjectorSettingsFile();
+
+            // Bind the events now
+            AutoLaunchGameCheckBox.Checked += InjectorSettingsControlChanged;
+            AutoLaunchGameCheckBox.Unchecked += InjectorSettingsControlChanged;
+            ResetBackupsCheckBox.Checked += InjectorSettingsControlChanged;
+            ResetBackupsCheckBox.Unchecked += InjectorSettingsControlChanged;
+            SlowModeCheckBox.Checked += InjectorSettingsControlChanged;
+            SlowModeCheckBox.Unchecked += InjectorSettingsControlChanged;
+            VerboseCheckBox.Checked += InjectorSettingsControlChanged;
+            VerboseCheckBox.Unchecked += InjectorSettingsControlChanged;
+            GameParametersTextBox.TextChanged += InjectorSettingsControlChanged;
+
             Loaded += AdvancedOptionsWindow_Loaded;
             Closing += AdvancedOptionsWindow_Closing;
+        }
+
+        /// <summary>
+        /// Loads the mod injector settings file
+        /// </summary>
+        private void LoadModInjectorSettingsFile()
+        {
+            var settingsFilePath = Path.Combine(App.GameFolder, "EternalModInjector Settings.txt");
+
+            if (!File.Exists(settingsFilePath))
+            {
+                InjectorSettingsGrid.IsEnabled = false;
+                MessageBox.Show("Mod injector settings file not found.\n\nThe mod injector settings section will not be available until the mod injector is run at least once.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            // Load the settings from the file now
+            ModInjectorSettings = new ModInjectorSettings();
+            var injectorSettings = File.ReadAllLines(settingsFilePath).Where(line => line.StartsWith(":"));
+
+            // Currently, all the settings are booleans or strings
+            foreach (var setting in injectorSettings)
+            {
+                var settingData = setting.Split('=');
+
+                if (settingData == null || settingData.Length == 0)
+                {
+                    continue;
+                }
+
+                bool settingValue = false;
+
+                if (settingData.Length > 1)
+                {
+                    if (settingData[0] != ":GAME_PARAMETERS")
+                    {
+                        int value = 0;
+                        int.TryParse(settingData[1], out value);
+
+                        settingValue = value == 0 ? false : true;
+                    }
+                }
+
+                switch (settingData[0])
+                {
+                    case ":AUTO_LAUNCH_GAME":
+                        ModInjectorSettings.AutomaticGameLaunch = settingValue;
+                        break;
+                    case ":RESET_BACKUPS":
+                        ModInjectorSettings.ResetBackups = settingValue;
+                        break;
+                    case ":VERBOSE":
+                        ModInjectorSettings.Verbose = settingValue;
+                        break;
+                    case ":SLOW":
+                        ModInjectorSettings.SlowMode = settingValue;
+                        break;
+                    case ":GAME_PARAMETERS":
+                        {
+                            if (settingData.Length > 1)
+                            {
+                                ModInjectorSettings.GameParameters = settingData[1];
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            OriginalModInjectorSettings = ModInjectorSettings.Clone();
         }
 
         /// <summary>
@@ -107,7 +211,7 @@ namespace EternalModManager
             }
 
             // Disable the UI
-            MainStackPanel.IsEnabled = false;
+            MainGrid.IsEnabled = false;
             RestoreBackupsButton.Content = "Restoring backups...";
             App.IsRestoringBackups = true;
 
@@ -180,7 +284,7 @@ namespace EternalModManager
                 // Re-enable the UI
                 Dispatcher.Invoke(() =>
                 {
-                    MainStackPanel.IsEnabled = true;
+                    MainGrid.IsEnabled = true;
                     RestoreBackupsButton.Content = "Restore backups";
                     MessageBox.Show($"{restoredCount} backups were restored.", "Restore backups", MessageBoxButton.OK, MessageBoxImage.Information);
                 });
@@ -315,6 +419,114 @@ namespace EternalModManager
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Fired when an injector settings control has changed
+        /// </summary>
+        /// <param name="sender">sender</param>
+        /// <param name="e">event args</param>
+        private void InjectorSettingsControlChanged(object sender, RoutedEventArgs e)
+        {
+            SaveInjectorSettingsButton.IsEnabled = !ModInjectorSettings.IsEqualTo(OriginalModInjectorSettings);
+        }
+
+        /// <summary>
+        /// Fired when the "Save mod injector settings" button is clicked
+        /// </summary>
+        /// <param name="sender">sender</param>
+        /// <param name="e">event args</param>
+        private void SaveInjectorSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var settingsFilePath = Path.Combine(App.GameFolder, "EternalModInjector Settings.txt");
+
+            if (!File.Exists(settingsFilePath))
+            {
+                InjectorSettingsGrid.IsEnabled = false;
+                SaveInjectorSettingsButton.IsEnabled = false;
+                MessageBox.Show("Mod injector settings file not found.\n\nThe mod injector settings section will not be available until the mod injector is run at least once.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // Load the settings from the file now
+            string[] injectorSettings = null;
+
+            try
+            {
+                injectorSettings = File.ReadAllLines(settingsFilePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error while saving the mod injector settings\n\n" + ex, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (injectorSettings == null)
+            {
+                return;
+            }
+
+            // Change the settings
+            for (int i = 0; i < injectorSettings.Length; i++)
+            {
+                // If we found an empty line, this means we reached the end of the setting sectiont
+                if (string.IsNullOrEmpty(injectorSettings[i].Trim()))
+                {
+                    break;
+                }
+
+                var settingData = injectorSettings[i].Split('=');
+
+                if (settingData == null || settingData.Length == 0)
+                {
+                    continue;
+                }
+
+                switch (settingData[0])
+                {
+                    case ":AUTO_LAUNCH_GAME":
+                        injectorSettings[i] = $":AUTO_LAUNCH_GAME={(ModInjectorSettings.AutomaticGameLaunch ? "1" : "0")}";
+                        break;
+                    case ":RESET_BACKUPS":
+                        injectorSettings[i] = $":RESET_BACKUPS={(ModInjectorSettings.ResetBackups ? "1" : "0")}";
+                        break;
+                    case ":VERBOSE":
+                        injectorSettings[i] = $":VERBOSE={(ModInjectorSettings.Verbose ? "1" : "0")}";
+                        break;
+                    case ":SLOW":
+                        injectorSettings[i] = $":SLOW={(ModInjectorSettings.SlowMode ? "1" : "0")}";
+                        break;
+                    case ":GAME_PARAMETERS":
+                        injectorSettings[i] = $":GAME_PARAMETERS={ModInjectorSettings.GameParameters.Trim()}";
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            try
+            {
+                // Write the settings file file
+                File.WriteAllLines(settingsFilePath, injectorSettings);
+                SaveInjectorSettingsButton.IsEnabled = false;
+                OriginalModInjectorSettings = ModInjectorSettings.Clone();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error while saving the mod injector settings\n\n" + ex, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Fired when the "Copy EternalMod.json template" button is clicked
+        /// </summary>
+        /// <param name="sender">sender</param>
+        /// <param name="e">event args</param>
+        private void CopyTemplateButton_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText("{\r\n\t\"name\":\"\",\r\n\t\"author\":\"\",\r\n\t\"description\":\"\",\r\n\t\"version\":\"\",\r\n\t\"loadPriority\":0,\r\n\t\"requiredVersion\":8\r\n}");
+            MessageBox.Show("EternalMod.json template copied to your clipboard.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
