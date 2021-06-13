@@ -33,7 +33,7 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                     <ListBox.ContextMenu>
-                        <ContextMenu HorizontalAlignment="Right" HorizontalOffset="225" Opened="ContextMenu_Opened">
+                        <ContextMenu HorizontalAlignment="Right" Opened="ContextMenu_Opened">
                             <MenuItem Header="Install mods from .zip files" Name="InstallModButton" Click="InstallModButton_Click"/>
                             <Separator />
                             <MenuItem Header="Enable selected" Name="EnableDisableSelectedButton" Click="EnableDisableSelectedButton_Click"/>
