@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EternalModManager"
         mc:Ignorable="d"
-        Title="Advanced options" Height="305" Width="600" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True">
+        Title="Advanced options" Height="305" Width="600" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />
