@@ -35,6 +35,7 @@ namespace EternalModManager
             AutoLaunchGameCheckBox.DataContext = this;
             ResetBackupsCheckBox.DataContext = this;
             SlowModeCheckBox.DataContext = this;
+            TextureCompressionCheckBox.DataContext = this;
             VerboseCheckBox.DataContext = this;
             GameParametersTextBox.DataContext = this;
 
@@ -48,6 +49,8 @@ namespace EternalModManager
             ResetBackupsCheckBox.Unchecked += InjectorSettingsControlChanged;
             SlowModeCheckBox.Checked += InjectorSettingsControlChanged;
             SlowModeCheckBox.Unchecked += InjectorSettingsControlChanged;
+            TextureCompressionCheckBox.Checked += InjectorSettingsControlChanged;
+            TextureCompressionCheckBox.Unchecked += InjectorSettingsControlChanged;
             VerboseCheckBox.Checked += InjectorSettingsControlChanged;
             VerboseCheckBox.Unchecked += InjectorSettingsControlChanged;
             GameParametersTextBox.TextChanged += InjectorSettingsControlChanged;
@@ -110,6 +113,9 @@ namespace EternalModManager
                         break;
                     case ":SLOW":
                         ModInjectorSettings.SlowMode = settingValue;
+                        break;
+                    case ":COMPRESS_TEXTURES":
+                        ModInjectorSettings.CompressTextures = settingValue;
                         break;
                     case ":GAME_PARAMETERS":
                         {
@@ -495,6 +501,9 @@ namespace EternalModManager
                         break;
                     case ":SLOW":
                         injectorSettings[i] = $":SLOW={(ModInjectorSettings.SlowMode ? "1" : "0")}";
+                        break;
+                    case ":COMPRESS_TEXTURES":
+                        injectorSettings[i] = $":COMPRESS_TEXTURES={(ModInjectorSettings.CompressTextures ? "1" : "0")}";
                         break;
                     case ":GAME_PARAMETERS":
                         injectorSettings[i] = $":GAME_PARAMETERS={ModInjectorSettings.GameParameters.Trim()}";

@@ -21,6 +21,11 @@
         public bool SlowMode { get; set; } = false;
 
         /// <summary>
+        /// Compress textures (mod loader)
+        /// </summary>
+        public bool CompressTextures { get; set; } = false;
+
+        /// <summary>
         /// Verbose logging (mod loader)
         /// </summary>
         public bool Verbose { get; set; } = false;
@@ -40,6 +45,7 @@
             if (AutomaticGameLaunch == injectorSettings.AutomaticGameLaunch
                 && ResetBackups == injectorSettings.ResetBackups
                 && SlowMode == injectorSettings.SlowMode
+                && CompressTextures == injectorSettings.CompressTextures
                 && Verbose == injectorSettings.Verbose
                 && GameParameters == injectorSettings.GameParameters)
             {
@@ -60,6 +66,7 @@
                 AutomaticGameLaunch = AutomaticGameLaunch,
                 ResetBackups = ResetBackups,
                 SlowMode = SlowMode,
+                CompressTextures = CompressTextures,
                 Verbose = Verbose,
                 GameParameters = GameParameters
             };
