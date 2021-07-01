@@ -37,6 +37,7 @@ namespace EternalModManager
             SlowModeCheckBox.DataContext = this;
             TextureCompressionCheckBox.DataContext = this;
             VerboseCheckBox.DataContext = this;
+            MultiThreadingCheckBox.DataContext = this;
             GameParametersTextBox.DataContext = this;
 
             // Load the current mod injector settings file
@@ -53,6 +54,8 @@ namespace EternalModManager
             TextureCompressionCheckBox.Unchecked += InjectorSettingsControlChanged;
             VerboseCheckBox.Checked += InjectorSettingsControlChanged;
             VerboseCheckBox.Unchecked += InjectorSettingsControlChanged;
+            MultiThreadingCheckBox.Checked += InjectorSettingsControlChanged;
+            MultiThreadingCheckBox.Unchecked += InjectorSettingsControlChanged;
             GameParametersTextBox.TextChanged += InjectorSettingsControlChanged;
 
             Loaded += AdvancedOptionsWindow_Loaded;
@@ -116,6 +119,9 @@ namespace EternalModManager
                         break;
                     case ":COMPRESS_TEXTURES":
                         ModInjectorSettings.CompressTextures = settingValue;
+                        break;
+                    case ":DISABLE_MULTITHREADING":
+                        ModInjectorSettings.DisableMultiThreading = settingValue;
                         break;
                     case ":GAME_PARAMETERS":
                         {
@@ -498,6 +504,9 @@ namespace EternalModManager
                         break;
                     case ":VERBOSE":
                         injectorSettings[i] = $":VERBOSE={(ModInjectorSettings.Verbose ? "1" : "0")}";
+                        break;
+                    case ":DISABLE_MULTITHREADING":
+                        injectorSettings[i] = $":DISABLE_MULTITHREADING={(ModInjectorSettings.DisableMultiThreading ? "1" : "0")}";
                         break;
                     case ":SLOW":
                         injectorSettings[i] = $":SLOW={(ModInjectorSettings.SlowMode ? "1" : "0")}";

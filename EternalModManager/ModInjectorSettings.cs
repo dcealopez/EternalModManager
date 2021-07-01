@@ -31,6 +31,11 @@
         public bool Verbose { get; set; } = false;
 
         /// <summary>
+        /// Disable multi-threading (mod loader)
+        /// </summary>
+        public bool DisableMultiThreading { get; set; } = false;
+
+        /// <summary>
         /// Game parameters
         /// </summary>
         public string GameParameters { get; set; } = string.Empty;
@@ -47,6 +52,7 @@
                 && SlowMode == injectorSettings.SlowMode
                 && CompressTextures == injectorSettings.CompressTextures
                 && Verbose == injectorSettings.Verbose
+                && DisableMultiThreading == injectorSettings.DisableMultiThreading
                 && GameParameters == injectorSettings.GameParameters)
             {
                 return true;
@@ -68,6 +74,7 @@
                 SlowMode = SlowMode,
                 CompressTextures = CompressTextures,
                 Verbose = Verbose,
+                DisableMultiThreading = DisableMultiThreading,
                 GameParameters = GameParameters
             };
 
