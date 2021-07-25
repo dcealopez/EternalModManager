@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EternalModManager"
         mc:Ignorable="d"
-        Title="Advanced options" Height="315" Width="600" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="Advanced options" Height="335" Width="600" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />
@@ -13,22 +13,22 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
-            <Button Margin="20 15 15 5" Height="30" Name="OpenEnabledModsButton" Click="OpenEnabledModsButton_Click">
+            <Button Margin="20 11 15 5" Height="30" Name="OpenEnabledModsButton" Click="OpenEnabledModsButton_Click">
                 <Label>Open _enabled mods folder</Label>
             </Button>
-            <Button Margin="20 5 15 5" Height="30" Name="OpenDisabledModsButton" Click="OpenDisabledModsButton_Click">
+            <Button Margin="20 9 15 5" Height="30" Name="OpenDisabledModsButton" Click="OpenDisabledModsButton_Click">
                 <Label>Open _disabled mods folder</Label>
             </Button>
-            <Button Margin="20 5 15 5" Height="30" Name="OpenGameFolderButton" Click="OpenGameFolderButton_Click">
+            <Button Margin="20 9 15 5" Height="30" Name="OpenGameFolderButton" Click="OpenGameFolderButton_Click">
                 <Label>Open _game folder</Label>
             </Button>
-            <Button Margin="20 5 15 5" Height="30" Name="RestoreBackupsButton" Click="RestoreBackupsButton_Click">
+            <Button Margin="20 9 15 5" Height="30" Name="RestoreBackupsButton" Click="RestoreBackupsButton_Click">
                 <Label>Restore _backups</Label>
             </Button>
-            <Button Margin="20 5 15 5" Height="30" Name="ResetBackupsButton" Click="ResetBackupsButton_Click">
+            <Button Margin="20 9 15 5" Height="30" Name="ResetBackupsButton" Click="ResetBackupsButton_Click">
                 <Label>_Reset backups</Label>
             </Button>
-            <Button Margin="20 5 15 5" Height="30" Name="CopyTemplateButton" Click="CopyTemplateButton_Click">
+            <Button Margin="20 9 15 5" Height="30" Name="CopyTemplateButton" Click="CopyTemplateButton_Click">
                 <Label>_Copy EternalMod.json template</Label>
             </Button>
         </StackPanel>
@@ -44,6 +44,7 @@
                 </Label>
                 <CheckBox IsChecked="{Binding ModInjectorSettings.AutomaticGameLaunch}" Name="AutoLaunchGameCheckBox">Automatically launch the game after injecting mods</CheckBox>
                 <CheckBox Margin="0 5 0 0" IsChecked="{Binding ModInjectorSettings.ResetBackups}" Name="ResetBackupsCheckBox" ToolTip="Resets the backed up game files before injecting mods. Enable only after verifying your game files.">Reset backups before injecting mods</CheckBox>
+                <CheckBox Margin="0 5 0 0" IsChecked="{Binding ModInjectorSettings.OnlineSafe}" Name="OnlineSafeCheckbox" ToolTip="Only load mods that are safe for use in multiplayer.">Load multiplayer safe mods only</CheckBox>
                 <CheckBox Margin="0 5 0 0" IsChecked="{Binding ModInjectorSettings.SlowMode}" Name="SlowModeCheckBox" ToolTip="The slow mod loading mode can produce slightly smaller .resources files. If unsure, leave this unchecked.">Enable slow mod loading mode</CheckBox>
                 <CheckBox Margin="0 5 0 0" IsChecked="{Binding ModInjectorSettings.CompressTextures}" Name="TextureCompressionCheckBox" ToolTip="Compress uncompressed texture mod files during the mod loading process. Decreases mod loading performance. Might help preventing crashes due to having too many texture mods installed.">Enable texture compression</CheckBox>
                 <CheckBox Margin="0 5 0 0" IsChecked="{Binding ModInjectorSettings.Verbose}" Name="VerboseCheckBox" ToolTip="Useful for debugging mods. Prints more detailed information while loading mod files.">Enable verbose logging</CheckBox>

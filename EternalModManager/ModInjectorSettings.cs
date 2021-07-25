@@ -26,6 +26,11 @@
         public bool CompressTextures { get; set; } = false;
 
         /// <summary>
+        /// Load online-safe mods only (mod loader)
+        /// </summary>
+        public bool OnlineSafe { get; set; } = false;
+
+        /// <summary>
         /// Verbose logging (mod loader)
         /// </summary>
         public bool Verbose { get; set; } = false;
@@ -51,6 +56,7 @@
                 && ResetBackups == injectorSettings.ResetBackups
                 && SlowMode == injectorSettings.SlowMode
                 && CompressTextures == injectorSettings.CompressTextures
+                && OnlineSafe == injectorSettings.OnlineSafe
                 && Verbose == injectorSettings.Verbose
                 && DisableMultiThreading == injectorSettings.DisableMultiThreading
                 && GameParameters == injectorSettings.GameParameters)
@@ -73,6 +79,7 @@
                 ResetBackups = ResetBackups,
                 SlowMode = SlowMode,
                 CompressTextures = CompressTextures,
+                OnlineSafe = OnlineSafe,
                 Verbose = Verbose,
                 DisableMultiThreading = DisableMultiThreading,
                 GameParameters = GameParameters

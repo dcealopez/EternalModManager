@@ -34,6 +34,7 @@ namespace EternalModManager
             // so that they can be bound to the injector settings object properties
             AutoLaunchGameCheckBox.DataContext = this;
             ResetBackupsCheckBox.DataContext = this;
+            OnlineSafeCheckbox.DataContext = this;
             SlowModeCheckBox.DataContext = this;
             TextureCompressionCheckBox.DataContext = this;
             VerboseCheckBox.DataContext = this;
@@ -48,6 +49,8 @@ namespace EternalModManager
             AutoLaunchGameCheckBox.Unchecked += InjectorSettingsControlChanged;
             ResetBackupsCheckBox.Checked += InjectorSettingsControlChanged;
             ResetBackupsCheckBox.Unchecked += InjectorSettingsControlChanged;
+            OnlineSafeCheckbox.Checked += InjectorSettingsControlChanged;
+            OnlineSafeCheckbox.Unchecked += InjectorSettingsControlChanged;
             SlowModeCheckBox.Checked += InjectorSettingsControlChanged;
             SlowModeCheckBox.Unchecked += InjectorSettingsControlChanged;
             TextureCompressionCheckBox.Checked += InjectorSettingsControlChanged;
@@ -119,6 +122,9 @@ namespace EternalModManager
                         break;
                     case ":COMPRESS_TEXTURES":
                         ModInjectorSettings.CompressTextures = settingValue;
+                        break;
+                    case ":ONLINE_SAFE":
+                        ModInjectorSettings.OnlineSafe = settingValue;
                         break;
                     case ":DISABLE_MULTITHREADING":
                         ModInjectorSettings.DisableMultiThreading = settingValue;
@@ -513,6 +519,9 @@ namespace EternalModManager
                         break;
                     case ":COMPRESS_TEXTURES":
                         injectorSettings[i] = $":COMPRESS_TEXTURES={(ModInjectorSettings.CompressTextures ? "1" : "0")}";
+                        break;
+                    case ":ONLINE_SAFE":
+                        injectorSettings[i] = $":ONLINE_SAFE={(ModInjectorSettings.OnlineSafe ? "1" : "0")}";
                         break;
                     case ":GAME_PARAMETERS":
                         injectorSettings[i] = $":GAME_PARAMETERS={ModInjectorSettings.GameParameters.Trim()}";
