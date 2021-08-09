@@ -1,5 +1,4 @@
-﻿using EternalModManager.Properties;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -16,12 +15,12 @@ namespace EternalModManager
         /// <summary>
         /// Mod injector settings
         /// </summary>
-        public ModInjectorSettings ModInjectorSettings { get; set; }
+        public static ModInjectorSettings ModInjectorSettings { get; set; }
 
         /// <summary>
         /// Original mod injector settings object, to track setting changes
         /// </summary>
-        private ModInjectorSettings OriginalModInjectorSettings;
+        private static ModInjectorSettings OriginalModInjectorSettings;
 
         /// <summary>
         /// Advanced Options Window constructor
@@ -42,6 +41,14 @@ namespace EternalModManager
             GameParametersTextBox.DataContext = this;
 
             // Load the current mod injector settings file
+            var settingsFilePath = Path.Combine(App.GameFolder, "EternalModInjector Settings.txt");
+
+            if (!File.Exists(settingsFilePath))
+            {
+                InjectorSettingsGrid.IsEnabled = false;
+                MessageBox.Show("Mod injector settings file not found.\n\nThe mod injector settings section will not be available until the mod injector is run at least once.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
             LoadModInjectorSettingsFile();
 
             // Bind the events now
@@ -68,14 +75,12 @@ namespace EternalModManager
         /// <summary>
         /// Loads the mod injector settings file
         /// </summary>
-        private void LoadModInjectorSettingsFile()
+        public static void LoadModInjectorSettingsFile()
         {
             var settingsFilePath = Path.Combine(App.GameFolder, "EternalModInjector Settings.txt");
 
             if (!File.Exists(settingsFilePath))
             {
-                InjectorSettingsGrid.IsEnabled = false;
-                MessageBox.Show("Mod injector settings file not found.\n\nThe mod injector settings section will not be available until the mod injector is run at least once.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -522,6 +527,9 @@ namespace EternalModManager
                         break;
                     case ":ONLINE_SAFE":
                         injectorSettings[i] = $":ONLINE_SAFE={(ModInjectorSettings.OnlineSafe ? "1" : "0")}";
+
+                        // Refresh the mod list box
+                        (Owner as MainWindow).FillModsListBox();
                         break;
                     case ":GAME_PARAMETERS":
                         injectorSettings[i] = $":GAME_PARAMETERS={ModInjectorSettings.GameParameters.Trim()}";

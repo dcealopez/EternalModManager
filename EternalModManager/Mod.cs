@@ -21,6 +21,27 @@
         public bool IsOnlineSafe { get; set; }
 
         /// <summary>
+        /// Whether or not this mod is going to be loaded by the mod loader
+        /// </summary>
+        public bool IsGoingToBeLoaded
+        {
+            get
+            {
+                if (AdvancedOptionsWindow.ModInjectorSettings == null)
+                {
+                    AdvancedOptionsWindow.LoadModInjectorSettingsFile();
+                }
+
+                if (!IsOnlineSafe && AdvancedOptionsWindow.ModInjectorSettings != null && AdvancedOptionsWindow.ModInjectorSettings.OnlineSafe)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Mod constructor
         /// </summary>
         /// <param name="fileName">mod file name</param>

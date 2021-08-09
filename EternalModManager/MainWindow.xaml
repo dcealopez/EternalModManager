@@ -25,21 +25,54 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Name="ListBoxItemStackPanel">
-                                <CheckBox IsChecked="{Binding IsEnabled}" Checked="ModCheckBox_Checked"  Unchecked="ModCheckBox_Checked" />
-                                <Label Padding="5 0 0 0">
+                                <CheckBox IsChecked="{Binding IsEnabled}" Checked="ModCheckBox_Checked" Unchecked="ModCheckBox_Checked" />
+                                <Label Padding="5 0 0 0" Width="485">
                                     <Label.Style>
                                         <Style TargetType="Label">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsOnlineSafe}" Value="True">
-                                                    <Setter Property="Foreground" Value="Green"></Setter>
+                                                <DataTrigger Binding="{Binding IsGoingToBeLoaded}" Value="False">
+                                                    <Setter Property="Foreground" Value="DarkGray" />
+                                                    <Setter Property="ToolTip" Value="This mod will not be loaded because it's not safe for multiplayer." />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsOnlineSafe}" Value="False">
-                                                    <Setter Property="Foreground" Value="Red"></Setter>
-                                                </DataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding IsGoingToBeLoaded}" Value="True" />
+                                                        <Condition Binding="{Binding IsOnlineSafe}" Value="False" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="ToolTip" Value="Multiplayer will be disabled if this mod is enabled because it's not safe for multiplayer." />
+                                                </MultiDataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </Label.Style>
                                     <TextBlock Text="{Binding FileName}" />
+                                </Label>
+                                <Label Padding="5 0 0 0" FontWeight="Bold" HorizontalContentAlignment="Center" Width="15">
+                                    <Label.Style>
+                                        <Style TargetType="Label">
+                                            <Setter Property="Label.Content" Value="Update" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsOnlineSafe}" Value="True">
+                                                    <Setter Property="Label.Content" Value="✓" />
+                                                    <Setter Property="Foreground" Value="Green" />
+                                                    <Setter Property="ToolTip" Value="This mod is safe for multiplayer." />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsOnlineSafe}" Value="False">
+                                                    <Setter Property="Label.Content" Value="!" />
+                                                    <Setter Property="Foreground" Value="Orange" />
+                                                    <Setter Property="ToolTip" Value="This mod is not safe for multiplayer. It will not be loaded." />
+                                                </DataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding IsGoingToBeLoaded}" Value="True" />
+                                                        <Condition Binding="{Binding IsOnlineSafe}" Value="False" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Label.Content" Value="!" />
+                                                    <Setter Property="Foreground" Value="Red" />
+                                                    <Setter Property="ToolTip" Value="This mod is not safe for multiplayer. Multiplayer will be disabled if this mod is enabled." />
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Label.Style>
                                 </Label>
                             </StackPanel>
                         </DataTemplate>

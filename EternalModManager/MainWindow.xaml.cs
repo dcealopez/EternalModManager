@@ -246,6 +246,7 @@ namespace EternalModManager
             ModVersionTextBlock.Text = "-";
             ModLoaderVersionTextBlock.Text = "-";
             ModLoadPriorityTextBlock.Text = "-";
+            ModMultiplayerSafeLabel.Content = "";
         }
 
         /// <summary>
@@ -272,8 +273,16 @@ namespace EternalModManager
                     }
                     else
                     {
-                        ModMultiplayerSafeLabel.Content = "This mod is not safe for multiplayer.";
-                        ModMultiplayerSafeLabel.Foreground = Brushes.Red;
+                        if (mod.IsGoingToBeLoaded)
+                        {
+                            ModMultiplayerSafeLabel.Content = "This mod is not safe for multiplayer. Multiplayer will be disabled if this mod is enabled.";
+                            ModMultiplayerSafeLabel.Foreground = Brushes.Red;
+                        }
+                        else
+                        {
+                            ModMultiplayerSafeLabel.Content = "This mod is not safe for multiplayer. It will not be loaded.";
+                            ModMultiplayerSafeLabel.Foreground = Brushes.Orange;
+                        }
                     }
                 });
 
