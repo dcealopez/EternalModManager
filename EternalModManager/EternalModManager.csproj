@@ -85,8 +85,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AssetsInfo.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="ModInjectorSettings.cs" />
+    <Compile Include="OnlineSafety.cs" />
     <Compile Include="Utils.cs" />
     <Page Include="AdvancedOptionsWindow.xaml">
       <SubType>Designer</SubType>

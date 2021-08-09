@@ -16,14 +16,20 @@
         public bool IsEnabled { get; set; }
 
         /// <summary>
+        /// Whether or not the mod is safe for multiplayer
+        /// </summary>
+        public bool IsOnlineSafe { get; set; }
+
+        /// <summary>
         /// Mod constructor
         /// </summary>
         /// <param name="fileName">mod file name</param>
         /// <param name="isEnabled">is the mod enabled?</param>
-        public Mod(string fileName, bool isEnabled)
+        public Mod(string fileName, bool isEnabled, bool isOnlineSafe)
         {
             FileName = fileName;
             IsEnabled = isEnabled;
+            IsOnlineSafe = isOnlineSafe;
         }
     }
 }

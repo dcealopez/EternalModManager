@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace EternalModManager
 {
@@ -128,16 +129,46 @@ namespace EternalModManager
                 // Enabled mods first
                 foreach (var file in Directory.EnumerateFiles(System.IO.Path.Combine(App.GameFolder, "Mods"), "*.zip", SearchOption.TopDirectoryOnly))
                 {
+                    // Check mod multiplayer safety
+                    bool isMultiplayerSafe = false;
+
+                    using (var zipArchive = ZipFile.OpenRead(file))
+                    {
+                        try
+                        {
+                            isMultiplayerSafe = OnlineSafety.IsModSafeForOnline(zipArchive);
+                        }
+                        catch
+                        {
+                            // Don't do anything, not worth it
+                        }
+                    }
+
                     var fileName = Path.GetFileName(file);
-                    var mod = new Mod(fileName, true);
+                    var mod = new Mod(fileName, true, isMultiplayerSafe);
                     ModListBox.Items.Add(mod);
                 }
 
                 // Disabled mods
                 foreach (var file in Directory.EnumerateFiles(System.IO.Path.Combine(App.GameFolder, "DisabledMods"), "*.zip", SearchOption.TopDirectoryOnly))
                 {
+                    // Check mod multiplayer safety
+                    bool isMultiplayerSafe = false;
+
+                    using (var zipArchive = ZipFile.OpenRead(file))
+                    {
+                        try
+                        {
+                            isMultiplayerSafe = OnlineSafety.IsModSafeForOnline(zipArchive);
+                        }
+                        catch
+                        {
+                            // Don't do anything, not worth it
+                        }
+                    }
+
                     var fileName = Path.GetFileName(file);
-                    var mod = new Mod(fileName, false);
+                    var mod = new Mod(fileName, false, isMultiplayerSafe);
                     ModListBox.Items.Add(mod);
                 }
             });
@@ -159,9 +190,7 @@ namespace EternalModManager
             if (ModListBox.SelectedItem != null)
             {
                 Mod mod = ModListBox.SelectedItem as Mod;
-                var modFilePath = Path.Combine(App.GameFolder, mod.IsEnabled ? "Mods" : "DisabledMods", mod.FileName);
-
-                DisplayModInformation(modFilePath);
+                DisplayModInformation(mod);
             }
             else
             {
@@ -223,8 +252,10 @@ namespace EternalModManager
         /// Displays the mod information section, filling it with the specified mod information
         /// </summary>
         /// <param name="modFilePath">mod file path</param>
-        private void DisplayModInformation(string modFilePath)
+        private void DisplayModInformation(Mod mod)
         {
+            var modFilePath = Path.Combine(App.GameFolder, mod.IsEnabled ? "Mods" : "DisabledMods", mod.FileName);
+
             if (!File.Exists(modFilePath))
             {
                 return;
@@ -232,6 +263,20 @@ namespace EternalModManager
 
             Task.Run(() =>
             {
+                Dispatcher.Invoke(() =>
+                {
+                    if (mod.IsOnlineSafe)
+                    {
+                        ModMultiplayerSafeLabel.Content = "This mod is safe for multiplayer.";
+                        ModMultiplayerSafeLabel.Foreground = Brushes.Green;
+                    }
+                    else
+                    {
+                        ModMultiplayerSafeLabel.Content = "This mod is not safe for multiplayer.";
+                        ModMultiplayerSafeLabel.Foreground = Brushes.Red;
+                    }
+                });
+
                 using (var zipArchive = ZipFile.OpenRead(modFilePath))
                 {
                     var eternalModJsonFile = zipArchive.GetEntry("EternalMod.json");
