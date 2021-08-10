@@ -22,31 +22,34 @@
                     <CheckBox Margin="0 0 5 0" VerticalAlignment="Center" HorizontalAlignment="Right" Name="EnableDisableAllCheckbox" Checked="EnableDisableAllCheckbox_Checked" Unchecked="EnableDisableAllCheckbox_Checked">Enable/Disable All</CheckBox>
                 </DockPanel>
                 <ListBox SelectionMode="Extended" Height="275" Name="ModListBox" SelectionChanged="ModListBox_SelectionChanged" AllowDrop="True" DragDrop.DragEnter="ModListBox_DragEnter" DragDrop.Drop="ModListBox_Drop" PreviewKeyDown="ModListBox_PreviewKeyDown">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Name="ListBoxItemStackPanel">
+                            <DockPanel Name="ListBoxItemStackPanel">
                                 <CheckBox IsChecked="{Binding IsEnabled}" Checked="ModCheckBox_Checked" Unchecked="ModCheckBox_Checked" />
-                                <Label Padding="5 0 0 0" Width="485">
+                                <Label Padding="5 0 0 0" MaxWidth="490" ToolTip="{Binding FileName}">
                                     <Label.Style>
                                         <Style TargetType="Label">
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsGoingToBeLoaded}" Value="False">
                                                     <Setter Property="Foreground" Value="DarkGray" />
-                                                    <Setter Property="ToolTip" Value="This mod will not be loaded because it's not safe for multiplayer." />
                                                 </DataTrigger>
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
                                                         <Condition Binding="{Binding IsGoingToBeLoaded}" Value="True" />
                                                         <Condition Binding="{Binding IsOnlineSafe}" Value="False" />
                                                     </MultiDataTrigger.Conditions>
-                                                    <Setter Property="ToolTip" Value="Multiplayer will be disabled if this mod is enabled because it's not safe for multiplayer." />
                                                 </MultiDataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </Label.Style>
-                                    <TextBlock Text="{Binding FileName}" />
+                                    <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding FileName}" />
                                 </Label>
-                                <Label Padding="5 0 0 0" FontWeight="Bold" HorizontalContentAlignment="Center" Width="15">
+                                <Label Padding="2 0 0 0" FontWeight="Bold" HorizontalAlignment="Right" HorizontalContentAlignment="Center" Width="15">
                                     <Label.Style>
                                         <Style TargetType="Label">
                                             <Setter Property="Label.Content" Value="Update" />
@@ -74,7 +77,7 @@
                                         </Style>
                                     </Label.Style>
                                 </Label>
-                            </StackPanel>
+                            </DockPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                     <ListBox.ContextMenu>

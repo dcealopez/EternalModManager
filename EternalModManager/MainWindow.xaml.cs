@@ -30,6 +30,11 @@ namespace EternalModManager
         /// </summary>
         private FileSystemWatcher DisabledModsFolderWatcher;
 
+        /// <summary>
+        /// Whether or not to discard the folder watcher events
+        /// </summary>
+        private bool DiscardFolderWatcherEvents;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -66,13 +71,13 @@ namespace EternalModManager
         /// </summary>
         public void InitializeFileSystemWatchers()
         {
-            ModsFolderWatcher = new FileSystemWatcher(System.IO.Path.Combine(App.GameFolder, "Mods"))
+            ModsFolderWatcher = new FileSystemWatcher(Path.Combine(App.GameFolder, "Mods"))
             {
                 EnableRaisingEvents = true,
                 IncludeSubdirectories = false,
             };
 
-            DisabledModsFolderWatcher = new FileSystemWatcher(System.IO.Path.Combine(App.GameFolder, "DisabledMods"))
+            DisabledModsFolderWatcher = new FileSystemWatcher(Path.Combine(App.GameFolder, "DisabledMods"))
             {
                 EnableRaisingEvents = true,
                 IncludeSubdirectories = false
@@ -96,7 +101,12 @@ namespace EternalModManager
         /// <param name="eventArgs">event args</param>
         protected void ModsFolderChange(object fsObject, FileSystemEventArgs eventArgs)
         {
-            FillModsListBox();
+            if (DiscardFolderWatcherEvents)
+            {
+                return;
+            }
+
+            FillModsListBox(eventArgs.FullPath, eventArgs.ChangeType);
         }
 
         /// <summary>
@@ -106,7 +116,12 @@ namespace EternalModManager
         /// <param name="eventArgs">event args</param>
         protected void DisabledModsFolderChange(object fsObject, FileSystemEventArgs eventArgs)
         {
-            FillModsListBox();
+            if (DiscardFolderWatcherEvents)
+            {
+                return;
+            }
+
+            FillModsListBox(eventArgs.FullPath, eventArgs.ChangeType);
         }
 
         /// <summary>
@@ -114,7 +129,7 @@ namespace EternalModManager
         /// </summary>
         /// <param name="listBox">list box</param>
         /// <param name="modsFolder">mods folder name</param>
-        public void FillModsListBox()
+        public void FillModsListBox(string changedFile = null, WatcherChangeTypes changeType = WatcherChangeTypes.All)
         {
             // Prompt to create the folders if they don't exist
             if (!Utils.CheckModsDirectory("Mods") || !Utils.CheckModsDirectory("DisabledMods"))
@@ -124,19 +139,42 @@ namespace EternalModManager
 
             Dispatcher.Invoke(() =>
             {
+                // Cache the multiplayer safety check, so that
+                // we don't do it if we don't have to, to improve performance
+                Dictionary<string, bool> fileSafetyCache = new Dictionary<string, bool>();
+
+                if (changedFile != null)
+                {
+                    foreach (Mod mod in ModListBox.Items)
+                    {
+                        fileSafetyCache.Add(mod.FullPath, mod.IsOnlineSafe);
+                    }
+                }
+
                 ModListBox.Items.Clear();
 
                 // Enabled mods first
-                foreach (var file in Directory.EnumerateFiles(System.IO.Path.Combine(App.GameFolder, "Mods"), "*.zip", SearchOption.TopDirectoryOnly))
+                foreach (var file in Directory.EnumerateFiles(Path.Combine(App.GameFolder, "Mods"), "*.zip", SearchOption.TopDirectoryOnly))
                 {
-                    // Check mod multiplayer safety
+                    // Check mod multiplayer safety if necessary
                     bool isMultiplayerSafe = false;
 
-                    using (var zipArchive = ZipFile.OpenRead(file))
+                    if (changedFile != null && changedFile != file)
+                    {
+                        fileSafetyCache.TryGetValue(file, out isMultiplayerSafe);
+                    }
+
+                    if (changedFile == null
+                        || (changedFile == file
+                            && (changeType == WatcherChangeTypes.Changed
+                            || changeType == WatcherChangeTypes.Created)))
                     {
                         try
                         {
-                            isMultiplayerSafe = OnlineSafety.IsModSafeForOnline(zipArchive);
+                            using (var zipArchive = ZipFile.OpenRead(file))
+                            {
+                                isMultiplayerSafe = OnlineSafety.IsModSafeForOnline(zipArchive);
+                            }
                         }
                         catch
                         {
@@ -145,21 +183,32 @@ namespace EternalModManager
                     }
 
                     var fileName = Path.GetFileName(file);
-                    var mod = new Mod(fileName, true, isMultiplayerSafe);
+                    var mod = new Mod(file, fileName, true, isMultiplayerSafe);
                     ModListBox.Items.Add(mod);
                 }
 
                 // Disabled mods
-                foreach (var file in Directory.EnumerateFiles(System.IO.Path.Combine(App.GameFolder, "DisabledMods"), "*.zip", SearchOption.TopDirectoryOnly))
+                foreach (var file in Directory.EnumerateFiles(Path.Combine(App.GameFolder, "DisabledMods"), "*.zip", SearchOption.TopDirectoryOnly))
                 {
-                    // Check mod multiplayer safety
+                    // Check mod multiplayer safety if necessary
                     bool isMultiplayerSafe = false;
 
-                    using (var zipArchive = ZipFile.OpenRead(file))
+                    if (changedFile != null && changedFile != file)
+                    {
+                        fileSafetyCache.TryGetValue(file, out isMultiplayerSafe);
+                    }
+
+                    if (changedFile == null
+                        || (changedFile == file
+                            && (changeType == WatcherChangeTypes.Changed
+                            || changeType == WatcherChangeTypes.Created)))
                     {
                         try
                         {
-                            isMultiplayerSafe = OnlineSafety.IsModSafeForOnline(zipArchive);
+                            using (var zipArchive = ZipFile.OpenRead(file))
+                            {
+                                isMultiplayerSafe = OnlineSafety.IsModSafeForOnline(zipArchive);
+                            }
                         }
                         catch
                         {
@@ -168,7 +217,7 @@ namespace EternalModManager
                     }
 
                     var fileName = Path.GetFileName(file);
-                    var mod = new Mod(fileName, false, isMultiplayerSafe);
+                    var mod = new Mod(file, fileName, false, isMultiplayerSafe);
                     ModListBox.Items.Add(mod);
                 }
             });
@@ -653,6 +702,9 @@ namespace EternalModManager
                 return;
             }
 
+            // Discard the folder watcher events for now, to avoid multiple unnecessary mod .zip file reads
+            DiscardFolderWatcherEvents = true;
+
             // Determine the source and destination directories depending on the
             // mods that are checked / unchecked, and then enable or disable them
             string sourceDir = "Mods";
@@ -690,6 +742,10 @@ namespace EternalModManager
                     }
                 }
             }
+
+            // Refill the mods list box and re-enable the folder watcher events
+            FillModsListBox();
+            DiscardFolderWatcherEvents = false;
         }
 
         /// <summary>
@@ -704,6 +760,9 @@ namespace EternalModManager
             {
                 return;
             }
+
+            // Discard the folder watcher events for now, to avoid multiple unnecessary mod .zip file reads
+            DiscardFolderWatcherEvents = true;
 
             // Determine the source and destination directories and enable/disable all the mods
             string sourceDir = (sender as CheckBox).IsChecked == true ? "DisabledMods" : "Mods";
@@ -728,6 +787,10 @@ namespace EternalModManager
                     continue;
                 }
             }
+
+            // Refill the mods list box and re-enable the folder watcher events
+            FillModsListBox();
+            DiscardFolderWatcherEvents = false;
         }
 
         /// <summary>
@@ -755,6 +818,9 @@ namespace EternalModManager
             }
 
             e.Handled = true;
+
+            // Discard the folder watcher events for now, to avoid multiple unnecessary mod .zip file reads
+            DiscardFolderWatcherEvents = true;
 
             // Determine the source and destination directories and enable / disable the mods
             string sourceDir = "Mods";
@@ -800,6 +866,7 @@ namespace EternalModManager
                         {
                             if (MessageBox.Show($"Are you sure you want to delete the selected mod?\n\n{(ModListBox.SelectedItem as Mod).FileName}", "Delete mods", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
                             {
+                                DiscardFolderWatcherEvents = false;
                                 return;
                             }
                         }
@@ -807,6 +874,7 @@ namespace EternalModManager
                         {
                             if (MessageBox.Show($"Are you sure you want to delete the selected mods?", "Delete mods", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
                             {
+                                DiscardFolderWatcherEvents = false;
                                 return;
                             }
                         }
@@ -822,7 +890,7 @@ namespace EternalModManager
                             if (!File.Exists(path))
                             {
                                 MessageBox.Show($"{mod.FileName} doesn't exist.", "Delete mods", MessageBoxButton.OK, MessageBoxImage.Error);
-                                return;
+                                continue;
                             }
 
                             modsToDelete.Add(path);
@@ -842,6 +910,10 @@ namespace EternalModManager
                         }
                     }
                 }
+
+                // Refill the mods list box and re-enable the folder watcher events
+                FillModsListBox();
+                DiscardFolderWatcherEvents = false;
             }
         }
     }

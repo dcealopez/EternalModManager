@@ -11,6 +11,11 @@
         public string FileName { get; set; }
 
         /// <summary>
+        /// Full path to the mod file
+        /// </summary>
+        public string FullPath { get; set; }
+
+        /// <summary>
         /// Whether or not the mod is enabled
         /// </summary>
         public bool IsEnabled { get; set; }
@@ -46,8 +51,9 @@
         /// </summary>
         /// <param name="fileName">mod file name</param>
         /// <param name="isEnabled">is the mod enabled?</param>
-        public Mod(string fileName, bool isEnabled, bool isOnlineSafe)
+        public Mod(string fullPath, string fileName, bool isEnabled, bool isOnlineSafe)
         {
+            FullPath = fullPath;
             FileName = fileName;
             IsEnabled = isEnabled;
             IsOnlineSafe = isOnlineSafe;
