@@ -192,7 +192,7 @@ namespace EternalModManager
                 return;
             }
 
-            Process.Start(System.IO.Path.Combine(App.GameFolder, "Mods"));
+            Process.Start(Path.Combine(App.GameFolder, "Mods"));
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace EternalModManager
                 return;
             }
 
-            Process.Start(System.IO.Path.Combine(App.GameFolder, "DisabledMods"));
+            Process.Start(Path.Combine(App.GameFolder, "DisabledMods"));
         }
 
         /// <summary>
@@ -218,7 +218,7 @@ namespace EternalModManager
         /// <param name="e">event args</param>
         private void OpenGameFolderButton_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start(System.IO.Path.Combine(App.GameFolder));
+            Process.Start(Path.Combine(App.GameFolder));
         }
 
         /// <summary>
@@ -244,7 +244,7 @@ namespace EternalModManager
                 int restoredCount = 0;
 
                 // Restore packagemapspec.json
-                var packageMapSpecJsonBackupFilePath = System.IO.Path.Combine(App.GameFolder, "base", "packagemapspec.json.backup");
+                var packageMapSpecJsonBackupFilePath = Path.Combine(App.GameFolder, "base", "packagemapspec.json.backup");
 
                 try
                 {
@@ -260,7 +260,7 @@ namespace EternalModManager
                 }
 
                 // Restore backups in the "base" directory
-                foreach (var file in Directory.EnumerateFiles(System.IO.Path.Combine(App.GameFolder, "base"), "*.resources.backup", SearchOption.TopDirectoryOnly))
+                foreach (var file in Directory.EnumerateFiles(Path.Combine(App.GameFolder, "base"), "*.resources.backup", SearchOption.TopDirectoryOnly))
                 {
                     try
                     {
@@ -275,7 +275,7 @@ namespace EternalModManager
                 }
 
                 // Restore backups in the "base/game" directory (all directories)
-                foreach (var file in Directory.EnumerateFiles(System.IO.Path.Combine(App.GameFolder, "base", "game"), "*.resources.backup", SearchOption.AllDirectories))
+                foreach (var file in Directory.EnumerateFiles(Path.Combine(App.GameFolder, "base", "game"), "*.resources.backup", SearchOption.AllDirectories))
                 {
                     try
                     {
@@ -290,7 +290,7 @@ namespace EternalModManager
                 }
 
                 // Restore backups in the "base/sound/soundbanks/pc" directory
-                foreach (var file in Directory.EnumerateFiles(System.IO.Path.Combine(App.GameFolder, "base", "sound", "soundbanks", "pc"), "*.snd.backup", SearchOption.TopDirectoryOnly))
+                foreach (var file in Directory.EnumerateFiles(Path.Combine(App.GameFolder, "base", "sound", "soundbanks", "pc"), "*.snd.backup", SearchOption.TopDirectoryOnly))
                 {
                     try
                     {
@@ -331,7 +331,7 @@ namespace EternalModManager
             int deletedCount = 0;
 
             // Delete packagemapspec.json.backup
-            var packageMapSpecJsonBackupFilePath = System.IO.Path.Combine(App.GameFolder, "base", "packagemapspec.json.backup");
+            var packageMapSpecJsonBackupFilePath = Path.Combine(App.GameFolder, "base", "packagemapspec.json.backup");
 
             try
             {
@@ -347,7 +347,7 @@ namespace EternalModManager
             }
 
             // Delete backups in the "base" directory
-            foreach (var file in Directory.EnumerateFiles(System.IO.Path.Combine(App.GameFolder, "base"), "*.resources.backup", SearchOption.TopDirectoryOnly))
+            foreach (var file in Directory.EnumerateFiles(Path.Combine(App.GameFolder, "base"), "*.resources.backup", SearchOption.TopDirectoryOnly))
             {
                 try
                 {
@@ -362,7 +362,7 @@ namespace EternalModManager
             }
 
             // Delete backups in the "base/game" directory (all directories)
-            foreach (var file in Directory.EnumerateFiles(System.IO.Path.Combine(App.GameFolder, "base", "game"), "*.resources.backup", SearchOption.AllDirectories))
+            foreach (var file in Directory.EnumerateFiles(Path.Combine(App.GameFolder, "base", "game"), "*.resources.backup", SearchOption.AllDirectories))
             {
                 try
                 {
@@ -377,7 +377,7 @@ namespace EternalModManager
             }
 
             // Delete backups in the "base/sound/soundbanks/pc" directory
-            foreach (var file in Directory.EnumerateFiles(System.IO.Path.Combine(App.GameFolder, "base", "sound", "soundbanks", "pc"), "*.snd.backup", SearchOption.TopDirectoryOnly))
+            foreach (var file in Directory.EnumerateFiles(Path.Combine(App.GameFolder, "base", "sound", "soundbanks", "pc"), "*.snd.backup", SearchOption.TopDirectoryOnly))
             {
                 try
                 {
@@ -392,7 +392,7 @@ namespace EternalModManager
             }
 
             // Remove the resource references from EternalModInjector Settings.txt
-            var settingsPath = System.IO.Path.Combine(App.GameFolder, "EternalModInjector Settings.txt");
+            var settingsPath = Path.Combine(App.GameFolder, "EternalModInjector Settings.txt");
 
             try
             {

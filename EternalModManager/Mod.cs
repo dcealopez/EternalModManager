@@ -1,4 +1,7 @@
-﻿namespace EternalModManager
+﻿using System.IO;
+using System.IO.Compression;
+
+namespace EternalModManager
 {
     /// <summary>
     /// Mod class
@@ -24,6 +27,11 @@
         /// Whether or not the mod is safe for multiplayer
         /// </summary>
         public bool IsOnlineSafe { get; set; }
+
+        /// <summary>
+        /// Whether or not the mod is valid
+        /// </summary>
+        public bool IsValid { get; set; }
 
         /// <summary>
         /// Whether or not this mod is going to be loaded by the mod loader

@@ -139,15 +139,15 @@ namespace EternalModManager
 
             Dispatcher.Invoke(() =>
             {
-                // Cache the multiplayer safety check, so that
+                // Cache the multiplayer safe and valid mod checks, so that
                 // we don't do it if we don't have to, to improve performance
-                Dictionary<string, bool> fileSafetyCache = new Dictionary<string, bool>();
+                Dictionary<string, Tuple<bool, bool>> fileSafetyCache = new Dictionary<string, Tuple<bool, bool>>();
 
                 if (changedFile != null)
                 {
                     foreach (Mod mod in ModListBox.Items)
                     {
-                        fileSafetyCache.Add(mod.FullPath, mod.IsOnlineSafe);
+                        fileSafetyCache.Add(mod.FullPath, new Tuple<bool, bool>(mod.IsOnlineSafe, mod.IsValid));
                     }
                 }
 
@@ -158,10 +158,18 @@ namespace EternalModManager
                 {
                     // Check mod multiplayer safety if necessary
                     bool isMultiplayerSafe = false;
+                    bool isValid = true;
 
                     if (changedFile != null && changedFile != file)
                     {
-                        fileSafetyCache.TryGetValue(file, out isMultiplayerSafe);
+                        Tuple<bool, bool> cachedResults;
+                        fileSafetyCache.TryGetValue(file, out cachedResults);
+
+                        if (cachedResults != null)
+                        {
+                            isMultiplayerSafe = cachedResults.Item1;
+                            isValid = cachedResults.Item2;
+                        }
                     }
 
                     if (changedFile == null
@@ -178,12 +186,14 @@ namespace EternalModManager
                         }
                         catch
                         {
-                            // Don't do anything, not worth it
+                            isValid = false;
                         }
                     }
 
                     var fileName = Path.GetFileName(file);
                     var mod = new Mod(file, fileName, true, isMultiplayerSafe);
+                    mod.IsValid = isValid;
+
                     ModListBox.Items.Add(mod);
                 }
 
@@ -192,10 +202,18 @@ namespace EternalModManager
                 {
                     // Check mod multiplayer safety if necessary
                     bool isMultiplayerSafe = false;
+                    bool isValid = true;
 
                     if (changedFile != null && changedFile != file)
                     {
-                        fileSafetyCache.TryGetValue(file, out isMultiplayerSafe);
+                        Tuple<bool, bool> cachedResults;
+                        fileSafetyCache.TryGetValue(file, out cachedResults);
+
+                        if (cachedResults != null)
+                        {
+                            isMultiplayerSafe = cachedResults.Item1;
+                            isValid = cachedResults.Item2;
+                        }
                     }
 
                     if (changedFile == null
@@ -212,12 +230,14 @@ namespace EternalModManager
                         }
                         catch
                         {
-                            // Don't do anything, not worth it
+                            isValid = false;
                         }
                     }
 
                     var fileName = Path.GetFileName(file);
                     var mod = new Mod(file, fileName, false, isMultiplayerSafe);
+                    mod.IsValid = isValid;
+
                     ModListBox.Items.Add(mod);
                 }
             });
@@ -315,79 +335,94 @@ namespace EternalModManager
             {
                 Dispatcher.Invoke(() =>
                 {
-                    if (mod.IsOnlineSafe)
+                    if (!mod.IsValid)
                     {
-                        ModMultiplayerSafeLabel.Content = "This mod is safe for multiplayer.";
-                        ModMultiplayerSafeLabel.Foreground = Brushes.Green;
+                        ModMultiplayerSafeLabel.Content = "Invalid .zip file.";
+                        ModMultiplayerSafeLabel.Foreground = Brushes.Red;
                     }
                     else
                     {
-                        if (mod.IsGoingToBeLoaded)
+                        if (mod.IsOnlineSafe)
                         {
-                            ModMultiplayerSafeLabel.Content = "This mod is not safe for multiplayer. Multiplayer will be disabled if this mod is enabled.";
-                            ModMultiplayerSafeLabel.Foreground = Brushes.Red;
+                            ModMultiplayerSafeLabel.Content = "This mod is safe for multiplayer.";
+                            ModMultiplayerSafeLabel.Foreground = Brushes.Green;
                         }
                         else
                         {
-                            ModMultiplayerSafeLabel.Content = "This mod is not safe for multiplayer. It will not be loaded.";
-                            ModMultiplayerSafeLabel.Foreground = Brushes.Orange;
+                            if (mod.IsGoingToBeLoaded)
+                            {
+                                ModMultiplayerSafeLabel.Content = "This mod is not safe for multiplayer. Multiplayer will be disabled if this mod is enabled.";
+                                ModMultiplayerSafeLabel.Foreground = Brushes.Red;
+                            }
+                            else
+                            {
+                                ModMultiplayerSafeLabel.Content = "This mod is not safe for multiplayer. It will not be loaded.";
+                                ModMultiplayerSafeLabel.Foreground = Brushes.Orange;
+                            }
                         }
                     }
                 });
 
-                using (var zipArchive = ZipFile.OpenRead(modFilePath))
+                try
                 {
-                    var eternalModJsonFile = zipArchive.GetEntry("EternalMod.json");
-
-                    if (eternalModJsonFile == null)
+                    using (var zipArchive = ZipFile.OpenRead(modFilePath))
                     {
-                        Dispatcher.Invoke(() =>
-                        {
-                            ModNameTextBlock.Text = Path.GetFileName(modFilePath);
-                            ModAuthorsTextBlock.Text = "Unknown.";
-                            ModDescriptionTextBlock.Text = "Not specified.";
-                            ModVersionTextBlock.Text = "Not specified.";
-                            ModLoaderVersionTextBlock.Text = "Unknown.";
-                            ModLoadPriorityTextBlock.Text = "0";
-                        });
-                    }
-                    else
-                    {
-                        ModInfo modInfo = null;
+                        var eternalModJsonFile = zipArchive.GetEntry("EternalMod.json");
 
-                        try
-                        {
-                            var stream = eternalModJsonFile.Open();
-                            byte[] eternalModJsonFileBytes = null;
-
-                            using (var memoryStream = new MemoryStream())
-                            {
-                                stream.CopyTo(memoryStream);
-                                eternalModJsonFileBytes = memoryStream.ToArray();
-                            }
-
-                            // Parse the JSON
-                            var serializerSettings = new JsonSerializerSettings();
-                            serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                            modInfo = JsonConvert.DeserializeObject<ModInfo>(Encoding.UTF8.GetString(eternalModJsonFileBytes), serializerSettings);
-                        }
-                        catch (Exception)
-                        {
-                            // Don't do anything, will be handled by the finally block
-                        }
-                        finally
+                        if (eternalModJsonFile == null)
                         {
                             Dispatcher.Invoke(() =>
                             {
-                                ModNameTextBlock.Text = modInfo == null || modInfo.Name == null ? Path.GetFileName(modFilePath) : modInfo.Name;
-                                ModAuthorsTextBlock.Text = modInfo == null || modInfo.Author == null ? "Unknown." : modInfo.Author;
-                                ModDescriptionTextBlock.Text = modInfo == null || modInfo.Description == null ? "Not specified." : modInfo.Description;
-                                ModVersionTextBlock.Text = modInfo == null || modInfo.Version == null ? "Not specified." : modInfo.Version;
-                                ModLoaderVersionTextBlock.Text = modInfo == null || modInfo.RequiredVersion == 0 ? "Unknown." : modInfo.RequiredVersion.ToString();
-                                ModLoadPriorityTextBlock.Text = modInfo == null || modInfo.LoadPriority == 0 ? "0" : modInfo.LoadPriority.ToString();
+                                ModNameTextBlock.Text = Path.GetFileName(modFilePath);
+                                ModAuthorsTextBlock.Text = "Unknown.";
+                                ModDescriptionTextBlock.Text = "Not specified.";
+                                ModVersionTextBlock.Text = "Not specified.";
+                                ModLoaderVersionTextBlock.Text = "Unknown.";
+                                ModLoadPriorityTextBlock.Text = "0";
                             });
                         }
+                        else
+                        {
+                            ModInfo modInfo = null;
+
+                            try
+                            {
+                                var stream = eternalModJsonFile.Open();
+                                byte[] eternalModJsonFileBytes = null;
+
+                                using (var memoryStream = new MemoryStream())
+                                {
+                                    stream.CopyTo(memoryStream);
+                                    eternalModJsonFileBytes = memoryStream.ToArray();
+                                }
+
+                                // Parse the JSON
+                                var serializerSettings = new JsonSerializerSettings();
+                                serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                                modInfo = JsonConvert.DeserializeObject<ModInfo>(Encoding.UTF8.GetString(eternalModJsonFileBytes), serializerSettings);
+                            }
+                            catch (Exception)
+                            {
+                                // Don't do anything, will be handled by the finally block
+                            }
+                            finally
+                            {
+                                Dispatcher.Invoke(() =>
+                                {
+                                    ModNameTextBlock.Text = modInfo == null || modInfo.Name == null ? Path.GetFileName(modFilePath) : modInfo.Name;
+                                    ModAuthorsTextBlock.Text = modInfo == null || modInfo.Author == null ? "Unknown." : modInfo.Author;
+                                    ModDescriptionTextBlock.Text = modInfo == null || modInfo.Description == null ? "Not specified." : modInfo.Description;
+                                    ModVersionTextBlock.Text = modInfo == null || modInfo.Version == null ? "Not specified." : modInfo.Version;
+                                    ModLoaderVersionTextBlock.Text = modInfo == null || modInfo.RequiredVersion == 0 ? "Unknown." : modInfo.RequiredVersion.ToString();
+                                    ModLoadPriorityTextBlock.Text = modInfo == null || modInfo.LoadPriority == 0 ? "0" : modInfo.LoadPriority.ToString();
+                                });
+                            }
+                        }
                     }
+                }
+                catch (Exception)
+                {
+                    // No need to do anything
                 }
             });
         }
@@ -668,9 +703,11 @@ namespace EternalModManager
             {
                 DeleteSelectedButton.IsEnabled = false;
                 EnableDisableSelectedButton.IsEnabled = false;
+                OpenFileLocationButton.IsEnabled = false;
                 return;
             }
 
+            OpenFileLocationButton.IsEnabled = ModListBox.SelectedItems.Count == 1;
             DeleteSelectedButton.IsEnabled = true;
             EnableDisableSelectedButton.IsEnabled = true;
 
@@ -915,6 +952,21 @@ namespace EternalModManager
                 FillModsListBox();
                 DiscardFolderWatcherEvents = false;
             }
+        }
+
+        /// <summary>
+        /// Open file location context menu button click
+        /// </summary>
+        /// <param name="sender">sender</param>
+        /// <param name="e">event args</param>
+        private void OpenFileLocationButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ModListBox.SelectedItem == null)
+            {
+                return;
+            }
+
+            Process.Start(Path.GetDirectoryName((ModListBox.SelectedItem as Mod).FullPath));
         }
     }
 }

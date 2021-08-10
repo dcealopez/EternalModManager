@@ -38,6 +38,9 @@
                                                 <DataTrigger Binding="{Binding IsGoingToBeLoaded}" Value="False">
                                                     <Setter Property="Foreground" Value="DarkGray" />
                                                 </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsValid}" Value="False">
+                                                    <Setter Property="Foreground" Value="Red" />
+                                                </DataTrigger>
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
                                                         <Condition Binding="{Binding IsGoingToBeLoaded}" Value="True" />
@@ -73,6 +76,11 @@
                                                     <Setter Property="Foreground" Value="Red" />
                                                     <Setter Property="ToolTip" Value="This mod is not safe for multiplayer. Multiplayer will be disabled if this mod is enabled." />
                                                 </MultiDataTrigger>
+                                                <DataTrigger Binding="{Binding IsValid}" Value="False">
+                                                    <Setter Property="Label.Content" Value="X" />
+                                                    <Setter Property="Foreground" Value="Red" />
+                                                    <Setter Property="ToolTip" Value="Invalid .zip file." />
+                                                </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </Label.Style>
@@ -84,6 +92,7 @@
                         <ContextMenu HorizontalAlignment="Right" Opened="ContextMenu_Opened">
                             <MenuItem Header="Install mods from .zip files" Name="InstallModButton" Click="InstallModButton_Click"/>
                             <Separator />
+                            <MenuItem Header="Open file location" Name="OpenFileLocationButton" Click="OpenFileLocationButton_Click"/>
                             <MenuItem Header="Enable selected" Name="EnableDisableSelectedButton" Click="EnableDisableSelectedButton_Click"/>
                             <MenuItem Header="Delete selected" Name="DeleteSelectedButton" Click="DeleteSelectedButton_Click"/>
                         </ContextMenu>
