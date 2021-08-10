@@ -127,8 +127,8 @@ namespace EternalModManager
         /// <summary>
         /// Fills the specified list box with the mod files in the specified mods folder
         /// </summary>
-        /// <param name="listBox">list box</param>
-        /// <param name="modsFolder">mods folder name</param>
+        /// <param name="changedFile">file that was changed</param>
+        /// <param name="changeType">the type of change the file went through</param>
         public void FillModsListBox(string changedFile = null, WatcherChangeTypes changeType = WatcherChangeTypes.All)
         {
             // Prompt to create the folders if they don't exist
