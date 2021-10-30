@@ -344,19 +344,19 @@ namespace EternalModManager
                     {
                         if (mod.IsOnlineSafe)
                         {
-                            ModMultiplayerSafeLabel.Content = "This mod is safe for multiplayer.";
+                            ModMultiplayerSafeLabel.Content = "This mod is safe for multiplayer/horde.";
                             ModMultiplayerSafeLabel.Foreground = Brushes.Green;
                         }
                         else
                         {
                             if (mod.IsGoingToBeLoaded)
                             {
-                                ModMultiplayerSafeLabel.Content = "This mod is not safe for multiplayer. Multiplayer will be disabled if this mod is enabled.";
+                                ModMultiplayerSafeLabel.Content = "This mod is not safe for multiplayer/horde. Battlemode and Horde Mode (scoring) will be disabled if this mod is enabled.";
                                 ModMultiplayerSafeLabel.Foreground = Brushes.Red;
                             }
                             else
                             {
-                                ModMultiplayerSafeLabel.Content = "This mod is not safe for multiplayer. It will not be loaded.";
+                                ModMultiplayerSafeLabel.Content = "This mod is not safe for multiplayer/horde. It will not be loaded.";
                                 ModMultiplayerSafeLabel.Foreground = Brushes.Orange;
                             }
                         }

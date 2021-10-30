@@ -97,7 +97,8 @@ namespace EternalModManager
             "gameresources",
             "pvp",
             "shell",
-            "warehouse"
+            "warehouse",
+            "e6"
         };
 
         /// <summary>
