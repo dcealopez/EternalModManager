@@ -97,8 +97,7 @@ namespace EternalModManager
             "gameresources",
             "pvp",
             "shell",
-            "warehouse",
-            "e6"
+            "warehouse"
         };
 
         /// <summary>
@@ -147,6 +146,12 @@ namespace EternalModManager
                 if (UnsafeResourceNameKeywords.Any(keyword => containerName.StartsWith(keyword)))
                 {
                     isModifyingUnsafeResource = true;
+                }
+
+                // Files with .lwo extension are unsafe - also catches $ variants such as .lwo$uvlayout_lightmap=1
+                if (Path.GetExtension(modName).Contains(".lwo"))
+                {
+                    isSafe = false;
                 }
 
                 // Allow modification of anything outside of "generated/decls/"
