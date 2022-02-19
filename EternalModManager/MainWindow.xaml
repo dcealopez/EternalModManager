@@ -60,12 +60,12 @@
                                                 <DataTrigger Binding="{Binding IsOnlineSafe}" Value="True">
                                                     <Setter Property="Label.Content" Value="✓" />
                                                     <Setter Property="Foreground" Value="Green" />
-                                                    <Setter Property="ToolTip" Value="This mod is safe for multiplayer/horde." />
+                                                    <Setter Property="ToolTip" Value="This mod is safe for multiplayer." />
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding IsOnlineSafe}" Value="False">
                                                     <Setter Property="Label.Content" Value="!" />
                                                     <Setter Property="Foreground" Value="Orange" />
-                                                    <Setter Property="ToolTip" Value="This mod is not safe for multiplayer/horde. It will not be loaded." />
+                                                    <Setter Property="ToolTip" Value="This mod is not safe for multiplayer. It will not be loaded." />
                                                 </DataTrigger>
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
@@ -74,7 +74,7 @@
                                                     </MultiDataTrigger.Conditions>
                                                     <Setter Property="Label.Content" Value="!" />
                                                     <Setter Property="Foreground" Value="Red" />
-                                                    <Setter Property="ToolTip" Value="This mod is not safe for multiplayer/horde. Battlemode and Horde Mode (scoring) will be disabled if this mod is enabled." />
+                                                    <Setter Property="ToolTip" Value="This mod is not safe for multiplayer. Battlemode will be disabled if this mod is enabled." />
                                                 </MultiDataTrigger>
                                                 <DataTrigger Binding="{Binding IsValid}" Value="False">
                                                     <Setter Property="Label.Content" Value="X" />
