@@ -74,7 +74,7 @@
                                                     </MultiDataTrigger.Conditions>
                                                     <Setter Property="Label.Content" Value="!" />
                                                     <Setter Property="Foreground" Value="Red" />
-                                                    <Setter Property="ToolTip" Value="This mod is not safe for use in public matches. Public Battlemode matches will be disabled if this mod is enabled." />
+                                                    <Setter Property="ToolTip" Value="This mod is not safe for use in public matches. Public Battlemode matches will be disabled." />
                                                 </MultiDataTrigger>
                                                 <DataTrigger Binding="{Binding IsValid}" Value="False">
                                                     <Setter Property="Label.Content" Value="X" />

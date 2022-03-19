@@ -351,7 +351,7 @@ namespace EternalModManager
                         {
                             if (mod.IsGoingToBeLoaded)
                             {
-                                ModMultiplayerSafeLabel.Content = "This mod is not safe for use in public matches. Public Battlemode matches will be disabled if this mod is enabled.";
+                                ModMultiplayerSafeLabel.Content = "This mod is not safe for use in public matches. Public Battlemode matches will be disabled.";
                                 ModMultiplayerSafeLabel.Foreground = Brushes.Red;
                             }
                             else
