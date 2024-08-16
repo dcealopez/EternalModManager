@@ -80,12 +80,13 @@ namespace EternalModManager
             "/tooltip/",
             "/livetile/",
             "/tutorialevent/",
-            "/maps/game/dlc/",
-            "/maps/game/dlc2/",
-            "/maps/game/hub/",
-            "/maps/game/shell/",
-            "/maps/game/sp/",
-            "/maps/game/tutorials/",
+            "maps/game/dlc/",
+            "maps/game/dlc2/",
+            "maps/game/horde/",
+            "maps/game/hub/",
+            "maps/game/shell/",
+            "maps/game/sp/",
+            "maps/game/tutorials/",
             "/decls/campaign/"
         };
 
@@ -154,8 +155,9 @@ namespace EternalModManager
                     isSafe = false;
                 }
 
-                // Allow modification of anything outside of "generated/decls/"
-                if (!modName.StartsWith("generated/decls/", StringComparison.OrdinalIgnoreCase))
+                // Allow modification of anything outside of "generated/decls/", except .entities files
+                if (!modName.StartsWith("generated/decls/", StringComparison.OrdinalIgnoreCase)
+                    && !modName.EndsWith(".entities", StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
