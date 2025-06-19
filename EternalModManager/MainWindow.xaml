@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:eternalmodmanager="clr-namespace:EternalModManager"
         mc:Ignorable="d"
-        Title="EternalModManager v1.9 by proteh" Height="784" Width="610" ResizeMode="CanMinimize" Icon="Resources\EternalModManager.ico" WindowStartupLocation="CenterScreen">
+        Title="EternalModManager v1.10 by proteh" Height="784" Width="610" ResizeMode="CanMinimize" Icon="Resources\EternalModManager.ico" WindowStartupLocation="CenterScreen">
     <Grid Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
