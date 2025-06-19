@@ -157,8 +157,9 @@ namespace EternalModManager
                 }
 
                 // Allow modification of anything outside of "generated/decls/", except .entities files
-                if (!modName.StartsWith("generated/decls/", StringComparison.OrdinalIgnoreCase)
-                    && !modName.EndsWith(".entities", StringComparison.OrdinalIgnoreCase))
+                if ((!modName.StartsWith("generated/decls/", StringComparison.OrdinalIgnoreCase) ||
+                    !modName.StartsWith("decls/", StringComparison.OrdinalIgnoreCase)) &&
+                    !modName.EndsWith(".entities", StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
