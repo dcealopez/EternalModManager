@@ -96,6 +96,7 @@ namespace EternalModManager
         public static string[] UnsafeResourceNameKeywords = new string[]
         {
             "gameresources",
+            "generated", // Old mods compatibility.
             "pvp",
             "shell",
             "warehouse"
